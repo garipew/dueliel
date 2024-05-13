@@ -1,4 +1,6 @@
 #include "mapa.h"
+#include "archer.h"
+#include "gameMaster.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -12,8 +14,8 @@ Mapa* criarMapa(){
 
 	Mapa* mapa = malloc(sizeof(*mapa));
 	
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
+	for(int i = 0; i < MAXHEIGHT; i++){
+		for(int j = 0; j < MAXWIDTH; j++){
 			mapa->pos[i][j] = 0;
 		}
 	}
@@ -35,8 +37,8 @@ void atualizarMapa(Mapa* mapa, Archer* arq){
 	
 	int xFlecha, yFlecha;	
 
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
+	for(int i = 0; i < MAXHEIGHT; i++){
+		for(int j = 0; j < MAXWIDTH; j++){
 			if(mapa->pos[i][j] < 0){
 				mapa->pos[i][j]++;
 				mapa->pos[i][j] *= -1;
@@ -49,45 +51,34 @@ void atualizarMapa(Mapa* mapa, Archer* arq){
 	
 	
 	if(arq->acao == 'a'){
-		// Registra flecha atirada, deve ser feito no servidor?
-		xFlecha = arq->x;
-		yFlecha = arq->y;
-
-		for(int i = 0; i < 8; i++){
-			
-			xFlecha += arq->dir[0];
-			yFlecha += arq->dir[1];
-
-			if(xFlecha < 0){
-				xFlecha = 0;
-				yFlecha -= arq->dir[1];
-				break;
-			}
-
-			if(xFlecha > 7){
-				xFlecha = 7;
-				yFlecha -= arq->dir[1];
-				break;
-			}
-			
-			if(yFlecha < 0){
-				yFlecha = 0;
-				xFlecha -= arq->dir[0];
-				break;
-			}
-
-			if(yFlecha > 7){
-				yFlecha = 7;
-				xFlecha -= arq->dir[0];
-				break;
-			}
-
-		
-		}
-
-		mapa->pos[yFlecha][xFlecha]++;
-
+		registrarFlechaLocal(arq, mapa);	
 	}
+
+}
+
+
+/* atualizarMapaServer(Mapa*, Archer*, Archer*, Mensagem*)
+ * Atualiza o mapa, usado apenas pelo servidor.
+*/
+
+void atualizarMapaServer(Mapa* mapa, Archer* arq1, Archer* arq2, Mensagem* msg){
+	
+	int xFlecha, yFlecha;	
+
+	for(int i = 0; i < MAXHEIGHT; i++){
+		for(int j = 0; j < MAXWIDTH; j++){
+			if(mapa->pos[i][j] < 0){
+				mapa->pos[i][j]++;
+				mapa->pos[i][j] *= -1;
+			}
+		}
+	}
+
+	mapa->pos[arq1->y][arq1->x] *= -1;
+	mapa->pos[arq1->y][arq1->x]--;
+	
+	mapa->pos[arq2->y][arq2->x] *= -1;
+	mapa->pos[arq2->y][arq2->x]--;
 
 }
 
@@ -97,8 +88,13 @@ void atualizarMapa(Mapa* mapa, Archer* arq){
 */ 
 void desenharMapa(Mapa* mapa){
 
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
+	for(int i = 0; i < MAXHEIGHT; i++){
+		for(int j = 0; j < MAXWIDTH; j++){
+
+			if(mapa->pos[i][j] < -10){
+				printf("# ");
+				continue;
+			}
 			
 			if(mapa->pos[i][j] < 0){
 				printf("@ ");
@@ -107,6 +103,7 @@ void desenharMapa(Mapa* mapa){
 			} else{
 				printf("x ");
 			}
+
 
 		}
 		printf("\n");

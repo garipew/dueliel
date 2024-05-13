@@ -1,22 +1,21 @@
 #ifndef ARCHER
 #define ARCHER
 
+#include "mensagem.h"
 
-typedef struct arch{
+struct arch{
 
 	int x, y;
 	int flechas;
 	int dir[2];
 	char acao;
 
-} Archer;
+};
 
-
-typedef struct mapa Mapa;
 
 Archer* criarArq(int, int);
-void mover(Archer*);
-void atirar(Archer*);
-void atualizarArq(Archer*, Mapa*);
+void mover(Archer*, Mensagem*);
+void atirar(Archer*, Mensagem*);
+void atualizarArq(Archer*, Mapa*, Mensagem*);
 void apagarArq(Archer*);
 #endif

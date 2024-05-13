@@ -1,4 +1,5 @@
 #include "archer.h"
+#include "gameMaster.h"
 #include "mapa.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,36 +40,41 @@ void mudarDirecao(Archer* arq){
 }
 
 
-/* mover(Archer*)
+/* mover(Archer*, Mensagem*)
  * Recebe ponteiro para uma struct Archer e atualiza sua posicao
 */
 
-void mover(Archer* arq){
+void mover(Archer* arq, Mensagem* msg){
 	
 	mudarDirecao(arq);
 	arq->x += arq->dir[0];
 	arq->y += arq->dir[1];
 	
-	if(arq->x > 7){
-		arq->x = 7;
+	if(arq->x > MAXWIDTH - 1){
+		arq->x = MAXWIDTH - 1;
 	} else if(arq->x < 0){
 		arq->x = 0;
 	}
 
-	if(arq->y > 7){
-		arq->y = 7;
+	if(arq->y > MAXHEIGHT - 1){
+		arq->y = MAXHEIGHT - 1;
 	} else if(arq->y < 0){
 		arq->y = 0;
 	}
+
+	msg->acao = 'm';
+	msg->x = arq->x;
+	msg->y = arq->y;
+
 }
 
 
-/* atirar(Archer*)
+/* atirar(Archer*, Mensagem*)
  * Recebe ponteiro para uma struct Archer, e, caso possua flechas
  * atira uma
 */
 
-void atirar(Archer* arq){
+void atirar(Archer* arq, Mensagem* msg){
 
 	if(arq->flechas == 0){
 		arq->acao = 'i';
@@ -80,22 +86,23 @@ void atirar(Archer* arq){
 	mudarDirecao(arq);
 	arq->flechas--;
 
-	printf("Flecha disparada de %d %d na direcao %d %d\n", arq->x, arq->y, arq->dir[0], arq->dir[1]);
-
+	msg->acao = 'a';
+	msg->x = arq->dir[0];
+	msg->y = arq->dir[1];
 }
 
 
-/* coletarFlecha(Archer*, Mapa*)
+/* coletarFlecha(Archer*, Mapa*, Mensagem*)
  * Coleta uma flecha no chao caso mochila nao esteja cheia e esteja proximo
 */
 
-void coletarFlecha(Archer* arq, Mapa* mapa){
+void coletarFlecha(Archer* arq, Mapa* mapa, Mensagem* msg){
 	
 	if(mapa->pos[arq->y][arq->x] > 0){
 		if(arq->flechas < 3){
 			arq->flechas++;
 			mapa->pos[arq->y][arq->x]--;
-			printf("Flechas: %d\n", arq->flechas);
+			msg->acao = 'c';
 		}
 	}
 }
@@ -124,7 +131,7 @@ void atualizarAcao(Archer* arq){
  * Atualiza todas as propriedades de um Archer
 */
 
-void atualizarArq(Archer* arq, Mapa* mapa){
+void atualizarArq(Archer* arq, Mapa* mapa, Mensagem* msg){
 	
 	atualizarAcao(arq);
 
@@ -133,14 +140,16 @@ void atualizarArq(Archer* arq, Mapa* mapa){
 		case 'i':
 			atualizarAcao(arq);
 		case 'a':
-			atirar(arq);
+			atirar(arq, msg);
+			registrarFlechaLocal(arq, mapa);
 			break;
 		case 'm':
-			mover(arq);
-			coletarFlecha(arq, mapa);
+			mover(arq, msg);
+			coletarFlecha(arq, mapa, msg);
 			break;
 		
 	}
+
 }
 
 
