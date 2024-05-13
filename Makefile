@@ -1,13 +1,13 @@
-all: teste server
+all: client server
 
-teste: teste.o archer.o mapa.o mensagem.o gameMaster.o connection.o
-	gcc teste.o archer.o mapa.o mensagem.o gameMaster.o connection.o -o teste
+client: client.o archer.o mapa.o mensagem.o gameMaster.o connection.o
+	gcc client.o archer.o mapa.o mensagem.o gameMaster.o connection.o -o client
 
 server: server.o connection.o archer.o mapa.o mensagem.o gameMaster.o
 	gcc server.o connection.o archer.o mapa.o mensagem.o gameMaster.o -o server
 
-teste.o: mensagem.h mapa.h archer.h teste.c 
-	gcc -c teste.c
+client.o: mensagem.h mapa.h archer.h client.c 
+	gcc -c client.c
 
 archer.o: mensagem.h mapa.h archer.h archer.c
 	gcc -c archer.c
@@ -28,4 +28,4 @@ connection.o: mensagem.h connection.h connection.c
 	gcc -c connection.c
 
 clean:
-	rm -rf *.o teste server
+	rm -rf *.o client server

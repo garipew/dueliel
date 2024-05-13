@@ -1,3 +1,7 @@
+#include "mensagem.h"
+#include "archer.h"
+#include "mapa.h"
+#include "connection.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,93 +15,67 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#define MAXBUFFSIZE 3 
-#define MAXMSGSIZE 3
-
-#define handle_error(msg) \
-	do { perror(msg); exit(EXIT_FAILURE); }while(0)
-
-
-
-
-void* get_in_addr(struct sockaddr* sa){
-
-	if(sa->sa_family == AF_INET){
-		return &(((struct sockaddr_in*) sa)->sin_addr);
-	}
-	
-	return &(((struct sockaddr_in6*) sa)->sin6_addr);
-
-}
 
 
 int main(int argc, char* argv[]){
 	
-	int serverfd; // hold server file descriptor value
-	
-	struct addrinfo hint, *servinfo, *p; // used to find server address
-	socklen_t sin_size; // sizeof server address struct
-	char s[INET6_ADDRSTRLEN]; // hold printable value of server IP
-	char buffer[MAXBUFFSIZE]; // recv messages from server 
-	char msg[MAXMSGSIZE]; 
-	int num_bytes;
-	int condicao;
+	int serverfd;
+
+	Mapa* mapa = criarMapa();
+	Archer* arq1 = criarArq(0, 0);
+
+	Mensagem* msg = criarMensagem();
 	
 	if(argc != 2){
 		handle_error("arguments");
 	}
-	
-	// clear and fill hint struct
-	memset(&hint, 0, sizeof(hint)); 
-	hint.ai_family = AF_INET;
-	hint.ai_socktype = SOCK_STREAM;
 
-	// find possible addresses to connect	
-	if(getaddrinfo(argv[1], "3490", &hint, &servinfo) != 0){
-		handle_error("addrinfo");
-	}
+
+	serverfd = findConnection(argv[1], "3490");
 	
-	// filter address list and make connection
-	for(p = servinfo; p != NULL; p = p->ai_next){
+	// Recebe do serv, le e interpreta.
+	
+	recv(serverfd, (char*)msg->string, sizeof(msg->string), 0);
+	
+	lerMensagem(msg);
+	interpretarMensagem(msg, arq1, mapa);	
+	
+	atualizarMapa(mapa, arq1);	
+	desenharMapa(mapa);
+
+	do{
+		// Recebe mensagem do serv
+		recv(serverfd, (char*)msg->string, sizeof(msg->string), 0);
+		lerMensagem(msg);
+		interpretarMensagem(msg, arq1, mapa);	
 		
-		if((serverfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1){ printf("socket\n"); continue; }
-		
-		if(connect(serverfd, p->ai_addr, p->ai_addrlen) == -1){ close(serverfd); printf("connect\n"); continue; }
-
-		break;
-
-	}
-
-	
-	if(p == NULL){ // connection not established
-		handle_error("connect error");
-	}
-
-	inet_ntop(p->ai_family, get_in_addr((struct sockaddr*)&p->ai_addr), s, sizeof(s));
-	printf("connected to: %s\n", s);
-		
-	freeaddrinfo(servinfo);
-	
-	do{	
-       		if((num_bytes = recv(serverfd, (char*)buffer, MAXBUFFSIZE -1, 0)) == -1){
-			handle_error("recv");
+		desenharMapa(mapa);
+		if(msg->acao != 'o' && msg->acao != 'k'){
+			// Faz acao
+			atualizarArq(arq1, mapa, msg);
+			atualizarMapa(mapa, arq1);
+			desenharMapa(mapa);
 		}
-		
-		buffer[num_bytes] = '\0';
-		condicao = strcmp(buffer, "exit\n");
-		if(num_bytes == 0 || condicao == 0){
-			printf("Server closed connection\n");
-			break;
-		}
+
+		// Envia mensagem pro serv
+		escreverMensagem(msg);
+		send(serverfd, (char*)msg->string, sizeof(msg->string), 0);	
+	}while(msg->acao != 'k' && msg->acao != 'o');
 	
-		printf("%s\n", buffer);
-		
-	} while(condicao != 0);
+	
+	if(msg->acao == 'k'){
+		printf("Voce ganhou!!!\n");
+	}else if(msg->acao == 'o'){
+		printf("Voce perdeu...\n");
+	}
+
+
+
+	apagarArq(arq1);
+	apagarMapa(mapa);
 
 	close(serverfd);
 
 	return 0;
 
 }
-
-
