@@ -57,24 +57,29 @@ void atualizarDistancia(Archer* arq){
 void mudarDirecao(Archer* arq){
 	
 	char dir[10];
-
-	printf("Direcao: ");
-	fgets(dir, 10, stdin);
-
-	arq->dir[0] = 0;
-	arq->dir[1] = 0;
 	
-	if(dir[0] == 'n'){
-		arq->dir[1] = -1;
-	} else if(dir[0] == 's'){
-		arq->dir[1] = 1;
-	}
+	do{
+		
+		printf("Direcao: ");
+		fgets(dir, 10, stdin);
 
-	if(dir[1] == 'w'){
-		arq->dir[0] = -1;
-	} else if(dir[1] == 'e'){
-		arq->dir[0] = 1;
-	}
+		arq->dir[0] = 0;
+		arq->dir[1] = 0;
+	
+		if(dir[0] == 'n'){
+			arq->dir[1] = -1;
+		} else if(dir[0] == 's'){
+			arq->dir[1] = 1;
+		}
+
+		if(dir[1] == 'w'){
+			arq->dir[0] = -1;
+		} else if(dir[1] == 'e'){
+			arq->dir[0] = 1;
+		}
+
+
+	} while(arq->dir[0] == 0 && arq->dir[1] == 0);
 	
 
 }
@@ -178,8 +183,6 @@ void atualizarArq(Archer* arq, Mapa* mapa, Mensagem* msg){
 
 	switch(arq->acao){
 		
-		case 'i':
-			atualizarAcao(arq);
 		case 'a':
 			atirar(arq, msg);
 			registrarFlechaLocal(arq, mapa);
@@ -188,6 +191,9 @@ void atualizarArq(Archer* arq, Mapa* mapa, Mensagem* msg){
 			mover(arq, msg);
 			coletarFlecha(arq, mapa, msg);
 			break;
+		default:
+			printf("Ação inválida\n");
+			atualizarArq(arq, mapa, msg);
 		
 	}
 
