@@ -1,31 +1,42 @@
 all: client server
+	clear
+
+update:
+	git pull origin main
 
 client: client.o archer.o mapa.o mensagem.o gameMaster.o connection.o
-	gcc client.o archer.o mapa.o mensagem.o gameMaster.o connection.o -o client
+	gcc out/client.o out/archer.o out/mapa.o out/mensagem.o out/gameMaster.o out/connection.o -o client
 
 server: server.o connection.o archer.o mapa.o mensagem.o gameMaster.o
-	gcc server.o connection.o archer.o mapa.o mensagem.o gameMaster.o -o server
+	gcc out/server.o out/connection.o out/archer.o out/mapa.o out/mensagem.o out/gameMaster.o -o server
 
-client.o: mensagem.h mapa.h archer.h client.c 
-	gcc -c client.c
+client.o: src/mensagem.h src/mapa.h src/archer.h src/client.c 
+	gcc -c src/client.c
+	mv client.o out
 
-archer.o: mensagem.h mapa.h archer.h archer.c
-	gcc -c archer.c
+archer.o: src/mensagem.h src/mapa.h src/archer.h src/archer.c
+	gcc -c src/archer.c
+	mv archer.o out
 
-mapa.o: mensagem.h archer.h mapa.h mapa.c
-	gcc -c mapa.c
+mapa.o: src/mensagem.h src/archer.h src/mapa.h src/mapa.c
+	gcc -c src/mapa.c
+	mv mapa.o out
 
-mensagem.o: gameMaster.h archer.h mapa.h mensagem.h mensagem.c
-	gcc -c mensagem.c
+mensagem.o: src/gameMaster.h src/archer.h src/mapa.h src/mensagem.h src/mensagem.c
+	gcc -c src/mensagem.c
+	mv mensagem.o out
 
-gameMaster.o: mensagem.h archer.h mapa.h gameMaster.h gameMaster.c
-	gcc -c gameMaster.c
+gameMaster.o: src/mensagem.h src/archer.h src/mapa.h src/gameMaster.h src/gameMaster.c
+	gcc -c src/gameMaster.c
+	mv gameMaster.o out
 
-server.o: connection.h mensagem.h archer.h mapa.h server.c
-	gcc -c server.c
+server.o: src/connection.h src/mensagem.h src/archer.h src/mapa.h src/server.c
+	gcc -c src/server.c
+	mv server.o out
 
-connection.o: mensagem.h connection.h connection.c
-	gcc -c connection.c
+connection.o: src/mensagem.h src/connection.h src/connection.c
+	gcc -c src/connection.c
+	mv connection.o out
 
 clean:
-	rm -rf *.o client server
+	rm -rf out/*.o client server

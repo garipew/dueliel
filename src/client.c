@@ -2,6 +2,7 @@
 #include "archer.h"
 #include "mapa.h"
 #include "connection.h"
+#include "gameMaster.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
