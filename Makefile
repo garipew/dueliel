@@ -1,5 +1,8 @@
 all: client server
 
+update:
+	git pull origin main
+
 client: client.o archer.o mapa.o mensagem.o gameMaster.o connection.o
 	gcc client.o archer.o mapa.o mensagem.o gameMaster.o connection.o -o client
 
