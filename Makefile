@@ -4,6 +4,9 @@ all: client server
 update:
 	git pull origin main
 
+update:
+	git pull origin main
+
 client: client.o archer.o mapa.o mensagem.o gameMaster.o connection.o
 	gcc out/client.o out/archer.o out/mapa.o out/mensagem.o out/gameMaster.o out/connection.o -o client
 
