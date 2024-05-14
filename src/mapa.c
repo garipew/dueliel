@@ -49,10 +49,6 @@ void atualizarMapa(Mapa* mapa, Archer* arq){
 	mapa->pos[arq->y][arq->x] *= -1;
 	mapa->pos[arq->y][arq->x]--;
 	
-	
-	if(arq->acao == 'a'){
-		registrarFlechaLocal(arq, mapa);	
-	}
 
 }
 

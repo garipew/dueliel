@@ -107,6 +107,7 @@ void registrarFlechaLocal(Archer* arq, Mapa* mapa){
 		
 	}
 
+	mapa->pos[yFlecha][xFlecha]++;
 }
 
 
