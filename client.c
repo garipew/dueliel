@@ -41,7 +41,7 @@ int main(int argc, char* argv[]){
 	interpretarMensagem(msg, arq1, mapa);	
 	
 	atualizarMapa(mapa, arq1);	
-	desenharMapa(mapa);
+	escreverTutorial();
 
 	do{
 		// Recebe mensagem do serv

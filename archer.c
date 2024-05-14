@@ -24,6 +24,31 @@ Archer* criarArq(int x, int y){
 }
 
 
+/* atualizarDistancia(Archer*)
+ * Lê do usuário a distância que deseja se mover.
+*/
+
+void atualizarDistancia(Archer* arq){
+	
+	char dist[10];
+	int distancia;
+	
+	printf("Distancia: ");
+	fgets(dist, 10, stdin);
+	sscanf(dist, "%d", &distancia);
+		
+	if(distancia < 1){
+		distancia = 1;
+	} else if(distancia > 3){
+		distancia = 3;
+	}
+
+
+	arq->dir[0] *= distancia;
+	arq->dir[1] *= distancia;
+
+}
+
 
 /* mudarDirecao(Archer*)
  * Recebe ponteiro para uma struct Archer e atualiza sua direcao
@@ -32,10 +57,25 @@ Archer* criarArq(int x, int y){
 void mudarDirecao(Archer* arq){
 	
 	char dir[10];
-	
+
 	printf("Direcao: ");
 	fgets(dir, 10, stdin);
-	sscanf(dir, "%d %d", &(arq->dir[0]), &(arq->dir[1]));
+
+	arq->dir[0] = 0;
+	arq->dir[1] = 0;
+	
+	if(dir[0] == 'n'){
+		arq->dir[1] = -1;
+	} else if(dir[0] == 's'){
+		arq->dir[1] = 1;
+	}
+
+	if(dir[1] == 'w'){
+		arq->dir[0] = -1;
+	} else if(dir[1] == 'e'){
+		arq->dir[0] = 1;
+	}
+	
 
 }
 
@@ -47,6 +87,7 @@ void mudarDirecao(Archer* arq){
 void mover(Archer* arq, Mensagem* msg){
 	
 	mudarDirecao(arq);
+	atualizarDistancia(arq);
 	arq->x += arq->dir[0];
 	arq->y += arq->dir[1];
 	

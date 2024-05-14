@@ -2,6 +2,7 @@
 #include "mapa.h"
 #include "archer.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 
 /* registrarFlecha(Archer*, Mapa*, Mensagem*)
@@ -105,5 +106,28 @@ void registrarFlechaLocal(Archer* arq, Mapa* mapa){
 
 		
 	}
+
+}
+
+
+/* escreverTutorial()
+ * Escreve na tela os comandos do jogo antes do início da partida
+*/
+
+void escreverTutorial(){
+
+	printf("\n\nVocê (@) é um arqueiro preso num campo de grama alta.\n");
+	printf("Se esgueirando pela grama alta existe algo ou alguém tentando te matar.\n");
+	printf("Sua única escolha é retribuir o favor.\n\n");
+
+	
+	printf("Em seu turno, há duas opções [m]over ou [a]tirar.\n");
+	printf("Após escolher sua ação, informe em qual direção será realizada. As possíveis direções são:\n\n");
+
+	printf("nw nn ne\nww @ ee\nsw ss se\n\n");
+
+	printf("Por fim, caso a ação escolhida seja [m]over, resta dizer a distancia desejada (valor entre 1-3).\n");
+
+	printf("Boa sorte e que vença o melhor.\n");
 
 }
