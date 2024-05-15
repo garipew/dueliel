@@ -122,13 +122,6 @@ void mover(Archer* arq, Mensagem* msg){
 
 void atirar(Archer* arq, Mensagem* msg){
 
-	if(arq->flechas == 0){
-		arq->acao = 'i';
-		printf("Flechas insuficientes.\n");
-		return;
-	}
-
-
 	mudarDirecao(arq);
 	arq->flechas--;
 
@@ -138,13 +131,31 @@ void atirar(Archer* arq, Mensagem* msg){
 }
 
 
+/* validarFlecha(Mapa*, int, int)
+ * Checa se flecha já foi coletada por inimigo
+ * Retorna 1 se a flecha está no chão e 0 caso tenha sido coletada
+*/
+
+int validarFlecha(Mapa* mapa, int x, int y){
+	
+	for(int i = 0; i < 3; i++){
+		if(mapa->flechasColetadas[i][1] == x && mapa->flechasColetadas[i][2] == y){
+			return 0;
+		}
+	}
+
+	return 1;
+
+}
+
+
 /* coletarFlecha(Archer*, Mapa*, Mensagem*)
  * Coleta uma flecha no chao caso mochila nao esteja cheia e esteja proximo
 */
 
 void coletarFlecha(Archer* arq, Mapa* mapa, Mensagem* msg){
 	
-	if(mapa->pos[arq->y][arq->x] > 0){
+	if(mapa->pos[arq->y][arq->x] > 0 && validarFlecha(mapa, arq->x, arq->y)){
 		if(arq->flechas < 3){
 			arq->flechas++;
 			mapa->pos[arq->y][arq->x]--;
@@ -164,11 +175,21 @@ void atualizarAcao(Archer* arq){
 
 	printf("\t\tSeu turno\n");
 	printf("Escolha sua proxima ação, digite [m] para mover ou [a] para atirar.\n");
-
-	printf("Sua escolha: ");
 	
-	fgets(acao, 4, stdin);
-	sscanf(acao, "%c", &(arq->acao));
+	do{
+		printf("Sua escolha: ");
+	
+		fgets(acao, 4, stdin);
+		sscanf(acao, "%c", &(arq->acao));
+		
+		if(arq->acao == 'a'){
+			if(arq->flechas > 0){
+				break;
+			}
+			printf("Flechas insuficientes.\n");
+		}
+
+	} while(arq->acao != 'm');
 
 }
 
@@ -183,13 +204,13 @@ void atualizarArq(Archer* arq, Mapa* mapa, Mensagem* msg){
 
 	switch(arq->acao){
 		
-		case 'a':
-			atirar(arq, msg);
-			registrarFlechaLocal(arq, mapa);
-			break;
 		case 'm':
 			mover(arq, msg);
 			coletarFlecha(arq, mapa, msg);
+			break;
+		case 'a':
+			atirar(arq, msg);
+			registrarFlechaLocal(arq, mapa);
 			break;
 		default:
 			printf("Ação inválida\n");

@@ -25,6 +25,17 @@ Mapa* criarMapa(){
 }
 
 
+/* revelarFlechaColetada(Mapa*, int, int)
+ * Revela que flecha foi coletada por inimigo anteriormente
+*/ 
+
+void revelarFlechaColetada(Mapa* mapa, int x, int y){
+	if(mapa->pos[y][x] > 0){
+		mapa->pos[y][x]--;
+	}
+}
+
+
 /* atualizarMapa(Archer*)
  * Atualiza posicoes no mapa
  * Jogador é registrado como -1.
@@ -49,6 +60,16 @@ void atualizarMapa(Mapa* mapa, Archer* arq){
 	mapa->pos[arq->y][arq->x] *= -1;
 	mapa->pos[arq->y][arq->x]--;
 	
+
+	for(int k = 0; k < 3; k++){
+		if(mapa->flechasColetadas[k][0] > 0){
+			mapa->flechasColetadas[k][0]--;
+		}
+
+		if(mapa->flechasColetadas[k][0] == 0){
+			revelarFlechaColetada(mapa, mapa->flechasColetadas[k][1], mapa->flechasColetadas[k][2]);
+		}
+	}	
 
 }
 
@@ -76,6 +97,27 @@ void atualizarMapaServer(Mapa* mapa, Archer* arq1, Archer* arq2, Mensagem* msg){
 	mapa->pos[arq2->y][arq2->x] *= -1;
 	mapa->pos[arq2->y][arq2->x]--;
 
+}
+
+
+/* registrarFlechaColetada(int, int)
+ * Armazena coordenadas de uma flecha coletada pelo inimigo
+ * Para revelar posteriormente.
+*/
+
+void registrarFlechaColetada(Mapa* mapa, int x, int y){
+	for(int i = 0; i < 3; i++){
+				
+		if(mapa->flechasColetadas[i][0] != 0){
+			continue;
+		}
+				
+		mapa->flechasColetadas[i][0] = 3;
+		mapa->flechasColetadas[i][1] = x;
+		mapa->flechasColetadas[i][2] = y;
+				
+		break;
+	}
 }
 
 

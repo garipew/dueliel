@@ -95,15 +95,16 @@ void interpretarMensagem(Mensagem* msg, Archer* arq, Mapa* mapa){
 			mapa->pos[msg->y][msg->x]++;
 			break;
 		case 'c':
-			// Jogador oleta flecha (Servidor)
+			// Jogador coleta flecha (Servidor)
+			mapa->pos[msg->y][msg->x]--;
 			arq->x = msg->x;
 			arq->y = msg->y;
-			mapa->pos[msg->y][msg->x]--;
 			msg->acao = 'r';
 			break;
 		case 'r':
 			// Registra flecha coletada por oponente
-			mapa->pos[msg->y][msg->x]--;
+			registrarFlechaColetada(mapa, msg->x, msg->y);
+			msg->acao = 't';
 			break;
 		case 'w':
 			// Vitoria (Jogadores)
