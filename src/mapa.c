@@ -40,8 +40,8 @@ void revelarFlechaColetada(Mapa* mapa, int x, int y){
  * Atualiza posicoes no mapa
  * Jogador é registrado como -1.
  * Qualquer valor < -1 indica flechas na pos do Jogador.
- * Quantidade de flechas são armazenadas com valores positivos nas pos.
- *
+ * Quantidade de flechas são armazenadas com valores entre -5 e 6 
+ * Valores < -5 são especiais, player morto ou eco por exemplo
 */
 
 void atualizarMapa(Mapa* mapa, Archer* arq){
@@ -50,6 +50,12 @@ void atualizarMapa(Mapa* mapa, Archer* arq){
 
 	for(int i = 0; i < MAXHEIGHT; i++){
 		for(int j = 0; j < MAXWIDTH; j++){
+			if(mapa->pos[i][j] <= -20){
+				mapa->pos[i][j] += 20;
+				mapa->pos[i][j] *= -1;
+				continue;
+			}
+
 			if(mapa->pos[i][j] < 0){
 				mapa->pos[i][j]++;
 				mapa->pos[i][j] *= -1;
@@ -84,7 +90,8 @@ void atualizarMapaServer(Mapa* mapa, Archer* arq1, Archer* arq2, Mensagem* msg){
 
 	for(int i = 0; i < MAXHEIGHT; i++){
 		for(int j = 0; j < MAXWIDTH; j++){
-			if(mapa->pos[i][j] < 0){
+			
+			if(mapa->pos[i][j] < 0){ 
 				mapa->pos[i][j]++;
 				mapa->pos[i][j] *= -1;
 			}
@@ -128,6 +135,11 @@ void desenharMapa(Mapa* mapa){
 
 	for(int i = 0; i < MAXHEIGHT; i++){
 		for(int j = 0; j < MAXWIDTH; j++){
+			
+			if(mapa->pos[i][j] <= -20){
+				printf("? ");
+				continue;
+			}
 
 			if(mapa->pos[i][j] < -10){
 				printf("# ");

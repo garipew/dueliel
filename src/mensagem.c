@@ -82,9 +82,20 @@ void interpretarMensagem(Mensagem* msg, Archer* arq, Mapa* mapa){
 	
 		case 'm':
 			// Jogador move (Servidor)
-			arq->x = msg->x;
-			arq->y = msg->y;
-			msg->acao = 't';
+			arq->x = arq->x ^ msg->x;
+			msg->x = msg->x ^ arq->x;
+			arq->x = msg->x ^ arq->x;
+	
+			arq->y = msg->y ^ arq->y;
+			msg->y = msg->y ^ arq->y;
+			arq->y = msg->y ^ arq->y;
+			msg->acao = 'e';
+			break;
+		case 'e':
+			if(arq->x != msg->x || arq->y != msg->y){
+				mapa->pos[msg->y][msg->x] *= -1;
+				mapa->pos[msg->y][msg->x] -= 20; 
+			}
 			break;
 		case 'a':
 			// Jogador atira flecha (Servidor)

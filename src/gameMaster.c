@@ -66,7 +66,7 @@ void registrarFlecha(Archer* arq, Mapa* mapa, Mensagem* msg){
 			break;
 		}
 
-		if(mapa->pos[yFlecha][xFlecha] < 0 && msg != NULL){
+		if(mapa->pos[yFlecha][xFlecha] < 0 && mapa->pos[yFlecha][xFlecha] > -20 && msg != NULL){
 			msg->acao = 'l';
 			break;
 			// Acertou alguem.
