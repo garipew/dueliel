@@ -1,4 +1,4 @@
-# Duel
+# Dueliel
 
 Você (@) é um arqueiro preso num campo de grama alta.<br/>
 Se esgueirando pela grama alta existe algo ou alguém tentando te matar.<br/>
@@ -17,22 +17,22 @@ Boa sorte e que vença o melhor.
 ## Compilar
 ### Dependencias
 
-Para compilar **duel** a biblioteca liblua5.3-dev é necessária<br/>
+Para compilar **dueliel** a biblioteca liblua5.3-dev é necessária<br/>
 ```
 sudo apt install liblua5.3-dev lua5.3
 ```
-Utilizando a makefile, o executável **duel** é produzido
+Utilizando a makefile, o executável **dueliel** é produzido
 ```
 make
 ```
 ## Executar
 
-Existem 2 formas de executar **duel**:<br/>
-1. Para criar uma partida simplesmente execute **duel**
+Existem 2 formas de executar **dueliel**:<br/>
+1. Para criar uma partida simplesmente execute **dueliel**
 ```
-./duel
+./dueliel
 ```
-2. Para se conectar à uma partida existente execute **duel** e passe como argumento o IP do host
+2. Para se conectar à uma partida existente execute **dueliel** e passe como argumento o IP do host
 ```
-./duel 127.0.0.1
+./dueliel 127.0.0.1
 ```
