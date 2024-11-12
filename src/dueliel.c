@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 		lua_setglobal(L, "argv");
 	}
 
-	luaL_dofile(L, "duel.lua");
+	luaL_dofile(L, "dueliel.lua");
 	lua_close(L);
 	
 	
